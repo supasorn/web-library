@@ -4,6 +4,7 @@ import { pick } from '../common/immutable';
 
 const isInitiallyMouse = typeof(matchMedia) === 'function' ? matchMedia('(pointer:fine)').matches : null;
 const isInitiallyTouch = typeof(matchMedia) === 'function' ? matchMedia('(pointer:coarse)').matches : null;
+const isInitiallyTouchRequestingDesktop = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
 
 const getViewport = ({ width }) => {
 	return {
@@ -17,20 +18,22 @@ const getViewport = ({ width }) => {
 
 const defaultState = {
 	isKeyboardUser: false,
-	isMouseUser: isInitiallyMouse,
+	isMouseUser: isInitiallyTouchRequestingDesktop || isInitiallyMouse,
 	isSingleColumn: false,
 	isTouchOrSmall: false,
-	isTouchUser: isInitiallyTouch,
+	isTouchUser: isInitiallyTouchRequestingDesktop ? false : isInitiallyTouch,
 	scrollbarWidth: getScrollbarWidth(),
 	shouldUseEditMode: false,
 	shouldUseModalCreatorField: false,
 	shouldUseSidebar: false,
 	shouldUseTabs: false,
-	userType: isInitiallyTouch ? 'touch' : 'mouse',
+	userType: (isInitiallyTouch && !isInitiallyTouchRequestingDesktop) ? 'touch' : 'mouse',
+	isInitiallyTouchRequestingDesktop,
 	...getViewport(process.env.NODE_ENV === 'test' ? {} : window.innerWidth)
 };
 
 const getDevice = (userType, viewport) => {
+	const isTouchRequestingDesktop = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
 	const isSingleColumn = viewport.xxs || viewport.xs;
 	const isTouchOrSmall = userType === 'touch' || viewport.xxs || viewport.xs || viewport.sm;
 	const shouldUseEditMode = isTouchOrSmall;
@@ -38,8 +41,8 @@ const getDevice = (userType, viewport) => {
 	const shouldUseSidebar = !viewport.lg;
 	const shouldUseTabs = (viewport.md || viewport.lg) && userType !== 'touch';
 
-	return { isSingleColumn, isTouchOrSmall, shouldUseEditMode, shouldUseModalCreatorField,
-		shouldUseSidebar, shouldUseTabs };
+	return { isTouchRequestingDesktop, isSingleColumn, isTouchOrSmall, shouldUseEditMode,
+		shouldUseModalCreatorField, shouldUseSidebar, shouldUseTabs };
 };
 
 const device = (state = defaultState, action) => {

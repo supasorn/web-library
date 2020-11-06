@@ -60,6 +60,7 @@ const Library = props => {
 		document.documentElement.classList.toggle('mouse', !!device.isMouseUser);
 		document.documentElement.classList.toggle('touch', !!device.isTouchUser);
 		document.documentElement.classList.toggle('scrollbar-style-permanent', device.scrollbarWidth > 0);
+		document.documentElement.classList.toggle('touch-requesting-desktop', device.isTouchRequestingDesktop);
 
 		prevUserType.current = device.userType;
 	}, [device]);

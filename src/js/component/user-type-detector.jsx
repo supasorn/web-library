@@ -31,11 +31,15 @@ const UserTypeDetector = () => {
 
 	const handleTouch = useCallback(ev => {
 		lastTouchStartEvent.current = ev.timeStamp;
+		// NOTE: This is guess work and might not be future-proof. E.g. if Apple releases
+		// 		 touch-capable MacBook it would probably trigger this.
+		const isTouchRequestingDesktop = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
 		dispatch(triggerUserTypeChange({
 			'isKeyboardUser': false,
-			'isMouseUser': false,
-			'isTouchUser': true,
-			'userType': 'touch'
+			'isMouseUser': isTouchRequestingDesktop,
+			'isTouchUser': !isTouchRequestingDesktop,
+			'userType': isTouchRequestingDesktop ? 'mouse' : 'touch',
+			isTouchRequestingDesktop
 		}));
 	});
 
