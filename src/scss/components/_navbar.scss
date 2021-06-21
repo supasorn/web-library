@@ -8,7 +8,9 @@
 	align-items: center;
 	font-size: $navbar-font-size;
 	width: 100%;
-	height: $navbar-height-xs;
+  height: $navbar-height-xs;
+  //height: 40px;
+  
 	position: relative;
 	left: 0;
 	padding: 0 $space-md;
@@ -19,7 +21,8 @@
 
 	@include bp-up(sm) {
 		flex: 0 0 auto;
-		height: $navbar-height-sm;
+		//height: $navbar-height-sm;
+		height: 40px;
 		background: $navbar-bg;
 	}
 
@@ -38,7 +41,7 @@
 
 		a {
 			display: block;
-			background: url("./images/zotero-logo.svg") 0 0 no-repeat;
+			//background: url("./images/zotero-logo.svg") 0 0 no-repeat;
 			background-size: 100%;
 			text-indent: 100%;
 			white-space: nowrap;
@@ -107,7 +110,8 @@
 	.input-group.search {
 		flex: 0 0 auto;
 		align-self: center;
-		width: $search-width;
+		//width: $search-width;
+		width: 500px;
 		font-size: 14px;
 		line-height: 20px; // Special height, like Upgrade button on zotero.org
 		margin-left: $navbar-padding-x;

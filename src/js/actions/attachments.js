@@ -122,7 +122,8 @@ const openFirstLinkSimple = itemKey => {
 				if (item && item.contentType == "application/pdf") {
 					//console.log("Open https://www.supasorn.com/zotereo_cache/test.php?key=" + item.key);
 					//console.log("Done");
-					window.open("https://www.supasorn.com/zotero_cache/test.php?key=" + item.key);
+					//window.open("https://www.supasorn.com/zotero_cache/test.php?key=" + item.key);
+          window.open("http://localhost:5000/paper/" + item.key);
 					break;
 				}
 //HERE
@@ -172,7 +173,8 @@ const openAttachment = (attachmentItemKey, skipChecks = false) => {
 			);
 		} else {
 			console.log("EXX");
-			window.open("https://www.supasorn.com/zotero_cache/test.php?key=" + attachmentItemKey);
+			//window.open("https://www.supasorn.com/zotero_cache/test.php?key=" + attachmentItemKey);
+      window.open("http://localhost:5000/paper/" + attachmentItemKey);
 		}
 	}
 }

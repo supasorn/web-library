@@ -101,6 +101,30 @@ const selectItemsKeyboard = (direction, magnitude, isMultiSelect) => {
 		if(typeof nextKeys === 'undefined') {
 			return cursorIndex;
 		}
+    let targetItemKey = nextKeys[0];
+    let itemsByParent = get(state, ['libraries', state.current.libraryKey, 'itemsByParent', targetItemKey], null);
+    if(!itemsByParent) {
+      await dispatch(fetchChildItems(targetItemKey, { start: 0, limit: 100 }));
+      itemsByParent = get(getState(), ['libraries', state.current.libraryKey, 'itemsByParent', targetItemKey], null);
+    }
+    if(itemsByParent && itemsByParent.keys.length > 0) {
+      for (let i = 0; i < itemsByParent.keys.length; i++) {
+        const firstAttachmentKey = itemsByParent.keys[i];
+        const item = get(getState(), ['libraries', state.current.libraryKey, 'items', firstAttachmentKey], null);
+        if (item && item.contentType == "application/pdf") {
+          console.log("Found pdf" + item.key);
+          document.getElementById("pdf_preview").innerHTML = "Loading Thumbnails";
+
+          const xhttp = new XMLHttpRequest();
+          xhttp.onload = function() {
+            document.getElementById("pdf_preview").innerHTML = this.responseText;
+          }
+          xhttp.open("GET", "http://localhost:5000/thumb/" + item.key, true);
+          xhttp.send();
+          break;
+        }
+      }
+    }
 
 		dispatch(navigate({ items: nextKeys, noteKey: null, attachmentKey: null }));
 		return cursorIndex;
@@ -141,6 +165,7 @@ const selectLastItem = () => {
 	}
 }
 
+
 const selectItemsMouse = (targetItemKey, isShiftModifer, isCtrlModifer) => {
 	return async (dispatch, getState) => {
 		const state = getState();
@@ -172,8 +197,8 @@ const selectItemsMouse = (targetItemKey, isShiftModifer, isCtrlModifer) => {
 		} else {
 			newKeys = [targetItemKey];
 
-      var element = document.getElementById("pdf_preview");
-      element.innerHTML = "<img width='50px' src='http://localhost:5000/papers/2006.11239/paper_s00.jpg'/>";
+      //var element = document.getElementById("pdf_preview");
+      //element.innerHTML = "<img width='50px' src='http://localhost:5000/papers/2006.11239/paper_s00.jpg'/>";
 
       let itemsByParent = get(state, ['libraries', state.current.libraryKey, 'itemsByParent', targetItemKey], null);
       if(!itemsByParent) {
@@ -186,7 +211,14 @@ const selectItemsMouse = (targetItemKey, isShiftModifer, isCtrlModifer) => {
           const item = get(getState(), ['libraries', state.current.libraryKey, 'items', firstAttachmentKey], null);
           if (item && item.contentType == "application/pdf") {
             console.log("Found pdf" + item.key);
-            window.open("https://www.supasorn.com/zotero_cache/test.php?key=" + item.key);
+            document.getElementById("pdf_preview").innerHTML = "Loading Thumbnails";
+
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+              document.getElementById("pdf_preview").innerHTML = this.responseText;
+            }
+            xhttp.open("GET", "http://localhost:5000/thumb/" + item.key, true);
+            xhttp.send();
             break;
           }
         }

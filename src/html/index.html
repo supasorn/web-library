@@ -16,7 +16,7 @@
 	<div id="zotero-web-library"></div>
 	<script type="application/json" id="zotero-web-library-config">
 		{
-			"userSlug": "vexling",
+			"userSlug": "supasorn",
 			"userId": "7902311",
 			"apiKey": "djJbbaFYJgPUmntp8RXB5ldA"
 		}
@@ -24,72 +24,6 @@
 	<script type="application/json" id="zotero-web-library-menu-config">
 		{
 			"desktop": [
-				{
-					"label": "My Library",
-					"href": "/mylibrary",
-					"active": true
-				},
-				{
-					"label": "Groups",
-					"href": "/groups"
-				},
-				{
-					"label": "Documentation",
-					"href": "/support"
-				},
-				{
-					"label": "Forums",
-					"href": "https://forums.zotero.org"
-				},
-				{
-					"label": "Get Involved",
-					"href": "/getinvolved"
-				},
-				{
-					"label": "Test User Anim ut magna minim elit eu duis sit elit.",
-					"truncate": true,
-					"dropdown": true,
-					"entries": [
-						{
-							"label": "My Profile",
-							"href": "/testuser1"
-						},
-						{
-							"separator": true
-						},
-						{
-							"label": "Inbox (13)",
-							"href": "https://forums.zotero.org/messages/inbox"
-						},
-						{
-							"separator": true
-						},
-						{
-							"label": "Settings",
-							"href": "/settings"
-						},
-						{
-							"label": "Use Old Web Library",
-							"href": "/testuser1/items?usenewlibrary=0"
-						},
-						{
-							"label": "Logout",
-							"href": "/user/logout"
-						}
-					]
-				},
-				{
-					"label": "Upgrade Storage",
-					"href": "/settings/storage?ref=usb",
-					"className": "offscreen"
-				},
-				{
-					"label": "Upgrade Storage",
-					"href": "/settings/storage?ref=usb",
-					"className": "btn btn-secondary hidden-md-down upgrade-storage",
-					"position": "right",
-					"aria-hidden": true
-				}
 			],
 			"mobile": [
 				{
@@ -100,18 +34,6 @@
 				{
 					"label": "Groups",
 					"href": "/groups"
-				},
-				{
-					"label": "Documentation",
-					"href": "/support"
-				},
-				{
-					"label": "Forums",
-					"href": "https://forums.zotero.org"
-				},
-				{
-					"label": "Get Involved",
-					"href": "/getinvolved"
 				},
 				{
 					"label": "Test User",
@@ -134,11 +56,6 @@
 				{
 					"label": "Logout",
 					"href": "/user/logout"
-				},
-				{
-					"label": "Upgrade Storage",
-					"href": "/settings/storage?ref=usb",
-					"className": "separated"
 				}
 			]
 		}
@@ -147,9 +64,34 @@
 <style>
 #pdf_preview {
 }
+#dragbar {
+  display: block;
+  width: 100%;
+  height: 8px;
+  cursor: row-resize;
+  background-color: #EEEEEE;
+}
 </style>
-  <div id="pdf_preview">
+<div id="dragbar">
+</div>
+<div id="pdf_preview">
+</div>
+  <script>
+var bar = document.getElementById('dragbar');
 
-  </div>
+const drag = (e) => {
+
+  var main = document.getElementById('zotero-web-library');
+  main.style.height = (e.pageY) + 'px';
+}
+
+bar.addEventListener('mousedown', () => {
+  document.addEventListener('mousemove', drag);
+});
+
+bar.addEventListener('mouseup', () => {
+  document.removeEventListener('mousemove', drag);
+});
+  </script>
 </body>
 </html>

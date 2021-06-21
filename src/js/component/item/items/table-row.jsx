@@ -284,7 +284,8 @@ const TableRow = props => {
 					dispatch(openAttachment(itemData.key));
 				} else if(itemData.attachmentIconName) {
 					console.log("case B");
-					dispatch(openBestAttachment(itemKey));
+					//dispatch(openBestAttachment(itemKey));
+					dispatch(openBestAttachmentFallback(itemKey));
 				} else {
 					console.log("case C");
 					dispatch(openBestAttachmentFallback(itemKey));
