@@ -277,11 +277,16 @@ const TableRow = props => {
 				selectItem(itemKey, event, dispatch);
 			}
 			if(event.type === 'dblclick' && itemData.itemTypeRaw !== 'note') {
+        console.log("dblclick" + itemKey);
+
 				if(itemData.itemTypeRaw === 'attachment') {
+					console.log("case A");
 					dispatch(openAttachment(itemData.key));
 				} else if(itemData.attachmentIconName) {
+					console.log("case B");
 					dispatch(openBestAttachment(itemKey));
 				} else {
+					console.log("case C");
 					dispatch(openBestAttachmentFallback(itemKey));
 				}
 			}

@@ -2,6 +2,7 @@ import { makePath } from '../common/navigation';
 import { getItemKeysPath } from '../common/state';
 import { push } from 'connected-react-router';
 import { clamp, get } from '../utils';
+import { fetchChildItems, getAttachmentUrl } from '.';
 
 const navigate = (path, isAbsolute = false) => {
 	return async (dispatch, getState) => {
@@ -170,6 +171,26 @@ const selectItemsMouse = (targetItemKey, isShiftModifer, isCtrlModifer) => {
 			}
 		} else {
 			newKeys = [targetItemKey];
+
+      var element = document.getElementById("pdf_preview");
+      element.innerHTML = "<img width='50px' src='http://localhost:5000/papers/2006.11239/paper_s00.jpg'/>";
+
+      let itemsByParent = get(state, ['libraries', state.current.libraryKey, 'itemsByParent', targetItemKey], null);
+      if(!itemsByParent) {
+        await dispatch(fetchChildItems(targetItemKey, { start: 0, limit: 100 }));
+        itemsByParent = get(getState(), ['libraries', state.current.libraryKey, 'itemsByParent', targetItemKey], null);
+      }
+      if(itemsByParent && itemsByParent.keys.length > 0) {
+        for (let i = 0; i < itemsByParent.keys.length; i++) {
+          const firstAttachmentKey = itemsByParent.keys[i];
+          const item = get(getState(), ['libraries', state.current.libraryKey, 'items', firstAttachmentKey], null);
+          if (item && item.contentType == "application/pdf") {
+            console.log("Found pdf" + item.key);
+            window.open("https://www.supasorn.com/zotero_cache/test.php?key=" + item.key);
+            break;
+          }
+        }
+      }
 		}
 		dispatch(navigate({ items: newKeys, noteKey: null, attachmentKey: null }));
 	}

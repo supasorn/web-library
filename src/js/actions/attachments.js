@@ -47,6 +47,7 @@ const openAttachmentBlockerWorkaround = attachmentItemKey => {
 
 // @TODO: remove code duplication
 const openFirstLinkBlockerWorkaround = itemKey => {
+	console.log("openFirstLinkBlockerWorkaround ");
 	return (dispatch, getState) => {
 		const state = getState();
 		let promise = Promise.resolve();
@@ -96,24 +97,49 @@ const openFirstLinkBlockerWorkaround = itemKey => {
 }
 
 const openFirstLinkSimple = itemKey => {
+	console.log("openFirstLinkSimple()");
 	return async (dispatch, getState) => {
 		const state = getState();
 		let itemsByParent = get(state, ['libraries', state.current.libraryKey, 'itemsByParent', itemKey], null);
 		if(!itemsByParent) {
+			console.log("A");
 			await dispatch(fetchChildItems(itemKey, { start: 0, limit: 100 }));
 			itemsByParent = get(getState(), ['libraries', state.current.libraryKey, 'itemsByParent', itemKey], null);
 		}
+		console.log("B");
+		console.log(itemsByParent);
 		if(itemsByParent && itemsByParent.keys.length > 0) {
-			const firstAttachmentKey = itemsByParent.keys[0];
-			const item = get(getState(), ['libraries', state.current.libraryKey, 'items', firstAttachmentKey], null);
+			/* Original code
 			if(item && item.url) {
 				window.open(item.url);
+			}*/
+			for (let i = 0; i < itemsByParent.keys.length; i++) {
+				const firstAttachmentKey = itemsByParent.keys[i];
+				const item = get(getState(), ['libraries', state.current.libraryKey, 'items', firstAttachmentKey], null);
+				console.log(item);
+				console.log(item.contentType);
+				console.log(item.key);
+				if (item && item.contentType == "application/pdf") {
+					//console.log("Open https://www.supasorn.com/zotereo_cache/test.php?key=" + item.key);
+					//console.log("Done");
+					window.open("https://www.supasorn.com/zotero_cache/test.php?key=" + item.key);
+					break;
+				}
+//HERE
+			//var element = document.getElementById("pdf_preview");
+			//console.log(element);
+				//if(item && item.url) {
+					//console.log("inhere");
+					//window.open(item.url);
+					//break;
+				//}
 			}
 		}
 	}
 }
 
 const openFirstLink = itemKey => {
+	console.log("openFirstLink()");
 	return async dispatch => {
 		const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 
@@ -144,6 +170,9 @@ const openAttachment = (attachmentItemKey, skipChecks = false) => {
 				openAttachmentSimple(attachmentItemKey) :
 				openAttachmentBlockerWorkaround(attachmentItemKey)
 			);
+		} else {
+			console.log("EXX");
+			window.open("https://www.supasorn.com/zotero_cache/test.php?key=" + attachmentItemKey);
 		}
 	}
 }
@@ -159,10 +188,14 @@ const openBestAttachment = itemKey => {
 };
 
 const openBestAttachmentFallback = itemKey => {
+	console.log("openBestAttachmentFallback()");
 	return async (dispatch, getState) => {
 		const state = getState();
 		const item = get(state, ['libraries', state.current.libraryKey, 'items', itemKey], null);
 
+		dispatch(openFirstLink(itemKey));
+
+/*
 		if(item.url) {
 			const url = cleanURL(item.url, true);
 			if(url) {
@@ -177,9 +210,8 @@ const openBestAttachmentFallback = itemKey => {
 				window.open(getDOIURL(doi));
 				return;
 			}
-		}
+		}*/
 
-		dispatch(openFirstLink(itemKey));
 	}
 }
 
