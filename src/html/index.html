@@ -11,6 +11,7 @@
 		<link rel="manifest" href="/manifest.json">
 		<link rel="apple-touch-icon" sizes="192x192" href="/static/icons/icon-192x192.png">
 		<link rel="apple-touch-icon" sizes="512x512" href="/static/icons/icon-512x512.png">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	</head>
 <body>
 	<div id="zotero-web-library"></div>
@@ -80,7 +81,6 @@
 var bar = document.getElementById('dragbar');
 
 const drag = (e) => {
-
   var main = document.getElementById('zotero-web-library');
   main.style.height = (e.pageY) + 'px';
 }

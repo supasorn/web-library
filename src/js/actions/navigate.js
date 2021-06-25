@@ -117,7 +117,7 @@ const selectItemsKeyboard = (direction, magnitude, isMultiSelect) => {
 
           const xhttp = new XMLHttpRequest();
           xhttp.onload = function() {
-            document.getElementById("pdf_preview").innerHTML = this.responseText;
+            $("#pdf_preview").html(this.responseText);
           }
           xhttp.open("GET", "http://localhost:5000/thumb/" + item.key, true);
           xhttp.send();
@@ -215,7 +215,7 @@ const selectItemsMouse = (targetItemKey, isShiftModifer, isCtrlModifer) => {
 
             const xhttp = new XMLHttpRequest();
             xhttp.onload = function() {
-              document.getElementById("pdf_preview").innerHTML = this.responseText;
+              $("#pdf_preview").html(this.responseText);
             }
             xhttp.open("GET", "http://localhost:5000/thumb/" + item.key, true);
             xhttp.send();

@@ -106,13 +106,10 @@ const openFirstLinkSimple = itemKey => {
 			await dispatch(fetchChildItems(itemKey, { start: 0, limit: 100 }));
 			itemsByParent = get(getState(), ['libraries', state.current.libraryKey, 'itemsByParent', itemKey], null);
 		}
-		console.log("B");
 		console.log(itemsByParent);
+
 		if(itemsByParent && itemsByParent.keys.length > 0) {
-			/* Original code
-			if(item && item.url) {
-				window.open(item.url);
-			}*/
+      var fallback;
 			for (let i = 0; i < itemsByParent.keys.length; i++) {
 				const firstAttachmentKey = itemsByParent.keys[i];
 				const item = get(getState(), ['libraries', state.current.libraryKey, 'items', firstAttachmentKey], null);
@@ -120,21 +117,16 @@ const openFirstLinkSimple = itemKey => {
 				console.log(item.contentType);
 				console.log(item.key);
 				if (item && item.contentType == "application/pdf") {
-					//console.log("Open https://www.supasorn.com/zotereo_cache/test.php?key=" + item.key);
-					//console.log("Done");
-					//window.open("https://www.supasorn.com/zotero_cache/test.php?key=" + item.key);
+          console.log("openFirstLinkSimple()->open");
           window.open("http://localhost:5000/paper/" + item.key);
-					break;
+          return;
 				}
-//HERE
-			//var element = document.getElementById("pdf_preview");
-			//console.log(element);
-				//if(item && item.url) {
-					//console.log("inhere");
-					//window.open(item.url);
-					//break;
-				//}
+        if (item && item.url) {
+          fallback = item.url;
+        }
 			}
+      if (fallback)
+        window.open(fallback);
 		}
 	}
 }
@@ -172,9 +164,10 @@ const openAttachment = (attachmentItemKey, skipChecks = false) => {
 				openAttachmentBlockerWorkaround(attachmentItemKey)
 			);
 		} else {
-			console.log("EXX");
-			//window.open("https://www.supasorn.com/zotero_cache/test.php?key=" + attachmentItemKey);
-      window.open("http://localhost:5000/paper/" + attachmentItemKey);
+      console.log("openAttachment()->open");
+      var w = window.open("http://localhost:5000/paper/" + attachmentItemKey);
+      setTimeout(() => w.document.title = 'This is a test', 2000);
+      //w.document.title = 'testing';
 		}
 	}
 }
