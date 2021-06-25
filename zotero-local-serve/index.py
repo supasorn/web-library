@@ -42,6 +42,15 @@ def getPaper(subpath):
   if len(f) > 0:
     return redirect('/paper/' + subpath + "/" + "".join(os.path.basename(f[0]).split("-")[2:]))
 
+def findBoundary(img_t, axis):
+  col = np.sum(img_t, axis) > 0
+  ind = col * np.arange(1, col.shape[0]+1)
+
+  mx = np.max(ind)
+  ind[ind == 0] = 5000
+  mn = np.min(ind)
+  return mn, mx
+
 @app.route("/test/<path:subpath>")
 def crop(subpath):
   pdf = glob.glob("/Users/supasorn/Zotero/storage/" + subpath + "/*.pdf")
@@ -49,16 +58,43 @@ def crop(subpath):
     return "no pdf"
   pdf = pdf[0]
 
-  pages = sorted(glob.glob("data/" + subpath + "/paper_s*.jpg"))
-  for page in pages:
-    img = cv.imread(page, cv.IMREAD_GRAYSCALE)
-    _, img_t = cv.threshold(img, 220, 255, cv.THRESH_BINARY_INV)
-    col = np.sum(img_t, 0) > 0
-    ind = col * np.arange(1, col.shape[0]+1)
-    print(np.min(ind), np.max(ind))
-    # cv.imwrite("test.jpg", img_t)
-    # return "done"
-    # print(img_t)
+  images = convert_from_path(pdf, dpi=150, jpegopt={
+    "quality": 100,
+    "progressive": True,
+    "optimize": True
+  }, fmt='jpeg')
+
+  lst = []
+  mind = 1e5
+  for i, img in enumerate(images):
+    img = np.array(img)
+
+    _, img_t = cv.threshold(img[:, :, 0], 220, 255, cv.THRESH_BINARY_INV)
+
+    cmn, cmx = findBoundary(img_t, 0)
+    rmn, rmx = findBoundary(img_t, 1)
+    lst.append((rmn, rmx, cmn, cmx))
+
+    cd = cmx - cmn
+    rd = rmx - rmn
+    if cd < mind: mind = cd
+    if rd < mind: mind = rd
+
+
+  margin = int(mind * 0.03)
+
+  lstc = 0
+  for i, img in enumerate(images):
+    img = np.array(img)
+
+    rmn, rmx, cmn, cmx = lst[i]
+    rmn = np.clip(rmn - margin, 0, img.shape[0]-1)
+    rmx = np.clip(rmx + margin, 0, img.shape[0]-1)
+    cmn = np.clip(cmn - margin, 0, img.shape[1]-1)
+    cmx = np.clip(cmx + margin, 0, img.shape[1]-1)
+
+    newimg = img[rmn:rmx, cmn:cmx]
+    cv.imwrite("data/" + subpath + "/paper_m%02d_cropped.jpg" % i, cv.cvtColor(newimg, cv.COLOR_RGB2BGR))
 
   return "ok"
 
@@ -91,13 +127,17 @@ def getthumb(subpath):
 
   base = "http://localhost:5000"
   out = outm = ""
-  pages = sorted(glob.glob("data/" + subpath + "/paper_s*.jpg"))
-  pages_m = sorted(glob.glob("data/" + subpath + "/paper_m*.jpg"))
-  for page in pages:
-    out += f"<img width='220px' class='paper_page' src='{base}/{page}'>"
+  # pages = sorted(glob.glob("data/" + subpath + "/paper_s*_cropped.jpg"))
+  pages_m = sorted(glob.glob("data/" + subpath + "/paper_m*_cropped.jpg"))
+  if len(pages_m) == 0:
+    crop(subpath)
+    pages_m = sorted(glob.glob("data/" + subpath + "/paper_m*_cropped.jpg"))
+
+  # for page in pages:
+    # out += f"<img height='180px' class='paper_page' src='{base}/{page}'>"
 
   for page in pages_m:
-    outm += f"<img width='900px' class='paper_page' src='{base}/{page}'>"
+    outm += f"<img height='1200px' class='paper_page' src='{base}/{page}'>"
 
   template = loadTemplate("paper.html")
   template = repTem(template, "SMALL", out)
