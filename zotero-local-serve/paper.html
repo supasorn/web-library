@@ -1,0 +1,40 @@
+<style>
+#small_thumb, #medium_thumb {
+  overflow: auto;
+  white-space: nowrap;
+}
+.paper_page {
+  border: 1px solid #888888;
+  margin: 1px;
+}
+</style>
+{SCRIPT}
+<body>
+  <div id="small_thumb">{SMALL}</div>
+  <div id="medium_thumb">{MEDIUM}</div>
+  <script>
+   
+    $("#small_thumb, #medium_thumb").click(function(e) {
+      var posY = $(this).offset().top;
+      var pos = (e.pageY - posY) / $(this).height();
+      var inc = 0.1
+      var scale = 1 - inc;
+      if (pos < 0.5)
+        scale = 1 + inc;
+
+      $(this).animate({scrollLeft: $(this).scrollLeft() * scale}, 100)
+
+      $(this).children("img").each(function() {
+        var w = $(this).width();
+        var h = $(this).height();
+        w *= scale;
+        h *= scale;
+        $(this).animate({
+          height: h + 'px',
+          width: w + 'px',
+        }, 100);
+      });
+
+    });
+  </script>
+</body>

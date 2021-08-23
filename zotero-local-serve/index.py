@@ -113,7 +113,7 @@ def repTem(template, tag, st):
   return template.replace("{" + tag + "}", st)
 
 @app.route("/thumb/<path:subpath>")
-def getthumb(subpath):
+def getthumb(subpath, methods=['GET']):
   pdf = glob.glob("/Users/supasorn/Zotero/storage/" + subpath + "/*.pdf")
   if len(pdf) == 0:
     return "no pdf"
@@ -137,9 +137,15 @@ def getthumb(subpath):
     # out += f"<img height='180px' class='paper_page' src='{base}/{page}'>"
 
   for page in pages_m:
-    outm += f"<img height='1200px' class='paper_page' src='{base}/{page}'>"
+    outm += f"<img height='1300px' class='paper_page' src='{base}/{page}'>"
 
   template = loadTemplate("paper.html")
   template = repTem(template, "SMALL", out)
   template = repTem(template, "MEDIUM", outm)
+
+  if request.args.get('script') is not None:
+    template = repTem(template, "SCRIPT", '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>')
+  else:
+    template = repTem(template, "SCRIPT", "")
+
   return template

@@ -188,7 +188,7 @@ const selectItemsMouse = (targetItemKey, isShiftModifer, isCtrlModifer) => {
 			if(isFlipped) {
 				newKeys.reverse();
 			}
-		} else if(isCtrlModifer) {
+		} else if(false && isCtrlModifer) { // use ctrl to open thumbnail in new tab instead
 			if(selectedItemKeys.includes(targetItemKey)) {
 				newKeys = selectedItemKeys.filter(key => key !== targetItemKey);
 			} else {
@@ -210,16 +210,21 @@ const selectItemsMouse = (targetItemKey, isShiftModifer, isCtrlModifer) => {
           const firstAttachmentKey = itemsByParent.keys[i];
           const item = get(getState(), ['libraries', state.current.libraryKey, 'items', firstAttachmentKey], null);
           if (item && item.contentType == "application/pdf") {
-            console.log("Found pdf" + item.key);
-            document.getElementById("pdf_preview").innerHTML = "Loading Thumbnails";
+						if (isCtrlModifer) {
+							window.open("http://localhost:5000/thumb/" + item.key + "?script");
+						} else {
+							console.log("Found pdf" + item.key);
+							document.getElementById("pdf_preview").innerHTML = "Loading Thumbnails";
 
-            const xhttp = new XMLHttpRequest();
-            xhttp.onload = function() {
-              $("#pdf_preview").html(this.responseText);
-            }
-            xhttp.open("GET", "http://localhost:5000/thumb/" + item.key, true);
-            xhttp.send();
-            break;
+							const xhttp = new XMLHttpRequest();
+							xhttp.onload = function() {
+								$("#pdf_preview").html(this.responseText);
+							}
+							
+							xhttp.open("GET", "http://localhost:5000/thumb/" + item.key, true);
+							xhttp.send();
+						}
+						break;
           }
         }
       }
