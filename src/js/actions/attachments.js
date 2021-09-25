@@ -118,7 +118,8 @@ const openFirstLinkSimple = itemKey => {
 				console.log(item.key);
 				if (item && item.contentType == "application/pdf") {
           console.log("openFirstLinkSimple()->open");
-          window.open("http://localhost:5000/paper/" + item.key);
+          //window.open("http://localhost:5000/paper/" + item.key);
+          window.open("http://localhost:5000/web/viewer.html?file=http://localhost:5000/paper/" + item.key);
           return;
 				}
         if (item && item.url) {
@@ -165,7 +166,8 @@ const openAttachment = (attachmentItemKey, skipChecks = false) => {
 			);
 		} else {
       console.log("openAttachment()->open");
-      var w = window.open("http://localhost:5000/paper/" + attachmentItemKey);
+      //var w = window.open("http://localhost:5000/paper/" + attachmentItemKey);
+			var w = window.open("http://localhost:5000/web/viewer.html?file=http://localhost:5000/paper/" + attachmentItemKey);
       setTimeout(() => w.document.title = 'This is a test', 2000);
       //w.document.title = 'testing';
 		}

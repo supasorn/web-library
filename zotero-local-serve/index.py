@@ -149,3 +149,25 @@ def getthumb(subpath, methods=['GET']):
     template = repTem(template, "SCRIPT", "")
 
   return template
+
+@app.route("/thumbpdf/<path:subpath>")
+def getthumbpdf(subpath, methods=['GET']):
+  pdf = glob.glob("/Users/supasorn/Zotero/storage/" + subpath + "/*.pdf")
+  if len(pdf) == 0:
+    return "no pdf"
+  pdf = pdf[0]
+
+
+  base = "http://localhost:5000"
+  out = outm = ""
+  # pages = sorted(glob.glob("data/" + subpath + "/paper_s*_cropped.jpg"))
+  pages_m = sorted(glob.glob("data/" + subpath + "/paper_m*_cropped.jpg"))
+  if len(pages_m) == 0:
+    crop(subpath)
+    pages_m = sorted(glob.glob("data/" + subpath + "/paper_m*_cropped.jpg"))
+
+
+  template = loadTemplate("pdf-serve/index.html")
+  template = repTem(template, "PDF", f"/paper/{subpath}/")
+
+  return template

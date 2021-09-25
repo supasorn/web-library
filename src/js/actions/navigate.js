@@ -115,12 +115,14 @@ const selectItemsKeyboard = (direction, magnitude, isMultiSelect) => {
           console.log("Found pdf" + item.key);
           document.getElementById("pdf_preview").innerHTML = "Loading Thumbnails";
 
-          const xhttp = new XMLHttpRequest();
-          xhttp.onload = function() {
-            $("#pdf_preview").html(this.responseText);
-          }
-          xhttp.open("GET", "http://localhost:5000/thumb/" + item.key, true);
-          xhttp.send();
+          $("#pdf_preview").html('<iframe width="100%" height="1200px" style="border: 0;" src="http://localhost:5000/web/viewer.html?file=http://localhost:5000/paper/' + item.key + '"></iframe>');
+          //const xhttp = new XMLHttpRequest();
+          //xhttp.onload = function() {
+            //$("#pdf_preview").html(this.responseText);
+          //}
+          //xhttp.open("GET", "http://localhost:8000/web/viewer.html?file=http://localhost:5000/paper/" + item.key, true);
+          //xhttp.open("GET", "http://localhost:5000/thumb/" + item.key, true);
+          //xhttp.send();
           break;
         }
       }
@@ -211,18 +213,21 @@ const selectItemsMouse = (targetItemKey, isShiftModifer, isCtrlModifer) => {
           const item = get(getState(), ['libraries', state.current.libraryKey, 'items', firstAttachmentKey], null);
           if (item && item.contentType == "application/pdf") {
 						if (isCtrlModifer) {
-							window.open("http://localhost:5000/thumb/" + item.key + "?script");
+							//window.open("http://localhost:5000/thumbpdf/" + item.key + "?script");
+							window.open("http://localhost:5000/web/viewer.html?file=http://localhost:5000/paper/" + item.key);
 						} else {
 							console.log("Found pdf" + item.key);
 							document.getElementById("pdf_preview").innerHTML = "Loading Thumbnails";
 
-							const xhttp = new XMLHttpRequest();
-							xhttp.onload = function() {
-								$("#pdf_preview").html(this.responseText);
-							}
+              $("#pdf_preview").html('<iframe width="100%" height="1200px" style="border: 0;" src="http://localhost:5000/web/viewer.html?file=http://localhost:5000/paper/' + item.key + '"></iframe>');
+							//const xhttp = new XMLHttpRequest();
+							//xhttp.onload = function() {
+								//$("#pdf_preview").html(this.responseText);
+							//}
 							
-							xhttp.open("GET", "http://localhost:5000/thumb/" + item.key, true);
-							xhttp.send();
+							//xhttp.open("GET", "http://localhost:5000/thumb/" + item.key, true);
+							//xhttp.open("GET", "http://localhost:8000/web/viewer.html?file=http://localhost:5000/paper/" + item.key, true);
+							//xhttp.send();
 						}
 						break;
           }
