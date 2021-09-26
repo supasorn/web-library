@@ -115,7 +115,7 @@ const selectItemsKeyboard = (direction, magnitude, isMultiSelect) => {
           console.log("Found pdf" + item.key);
           document.getElementById("pdf_preview").innerHTML = "Loading Thumbnails";
 
-          $("#pdf_preview").html('<iframe width="100%" height="1200px" style="border: 0;" src="http://localhost:5000/web/viewer.html?file=http://localhost:5000/paper/' + item.key + '"></iframe>');
+          $("#pdf_preview").html('<iframe width="100%" height="1600px" style="border: 0;" src="http://localhost:5000/web/viewer.html?file=http://localhost:5000/paper/' + item.key + '"></iframe>');
           //const xhttp = new XMLHttpRequest();
           //xhttp.onload = function() {
             //$("#pdf_preview").html(this.responseText);
@@ -219,7 +219,7 @@ const selectItemsMouse = (targetItemKey, isShiftModifer, isCtrlModifer) => {
 							console.log("Found pdf" + item.key);
 							document.getElementById("pdf_preview").innerHTML = "Loading Thumbnails";
 
-              $("#pdf_preview").html('<iframe width="100%" height="1200px" style="border: 0;" src="http://localhost:5000/web/viewer.html?file=http://localhost:5000/paper/' + item.key + '"></iframe>');
+              $("#pdf_preview").html('<iframe width="100%" height="1600px" style="border: 0;" src="http://localhost:5000/web/viewer.html?file=http://localhost:5000/paper/' + item.key + '"></iframe>');
 							//const xhttp = new XMLHttpRequest();
 							//xhttp.onload = function() {
 								//$("#pdf_preview").html(this.responseText);
