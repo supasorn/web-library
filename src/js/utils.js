@@ -4,6 +4,16 @@ import baseMappings from 'zotero-base-mappings';
 import columnProperties from './constants/column-properties';
 import { noteAsTitle } from './common/format';
 
+const openBelow = (item) => {
+  const prot = location.protocol;
+  $("#pdf_preview").html('<iframe width="100%" height="1600px" style="border: 0;" src="' + prot + '/slim_view/' + item + '"></iframe>');
+};
+
+const openNewWindow = (item) => {
+  const prot = location.protocol;
+  return window.open(prot + "/slim_view/" + item);
+};
+
 const splice = (array, at, count = 0, ...items) => {
 	if (at == null) {
 		at = array.length;
@@ -457,4 +467,6 @@ export {
 	stopPropagation,
 	transform,
 	vec2dist,
+  openBelow,
+  openNewWindow,
 };

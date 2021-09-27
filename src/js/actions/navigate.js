@@ -1,7 +1,7 @@
 import { makePath } from '../common/navigation';
 import { getItemKeysPath } from '../common/state';
 import { push } from 'connected-react-router';
-import { clamp, get } from '../utils';
+import { clamp, get, openBelow, openNewWindow} from '../utils';
 import { fetchChildItems, getAttachmentUrl } from '.';
 
 const navigate = (path, isAbsolute = false) => {
@@ -30,6 +30,7 @@ const navigate = (path, isAbsolute = false) => {
 		}
 	}
 };
+
 
 const selectItemsKeyboard = (direction, magnitude, isMultiSelect) => {
 	return async (dispatch, getState) => {
@@ -115,7 +116,8 @@ const selectItemsKeyboard = (direction, magnitude, isMultiSelect) => {
           console.log("Found pdf" + item.key);
           document.getElementById("pdf_preview").innerHTML = "Loading Thumbnails";
 
-          $("#pdf_preview").html('<iframe width="100%" height="1600px" style="border: 0;" src="http://localhost:5000/web/viewer.html?file=http://localhost:5000/paper/' + item.key + '"></iframe>');
+          openBelow(item.key);
+
           //const xhttp = new XMLHttpRequest();
           //xhttp.onload = function() {
             //$("#pdf_preview").html(this.responseText);
@@ -199,9 +201,6 @@ const selectItemsMouse = (targetItemKey, isShiftModifer, isCtrlModifer) => {
 		} else {
 			newKeys = [targetItemKey];
 
-      //var element = document.getElementById("pdf_preview");
-      //element.innerHTML = "<img width='50px' src='http://localhost:5000/papers/2006.11239/paper_s00.jpg'/>";
-
       let itemsByParent = get(state, ['libraries', state.current.libraryKey, 'itemsByParent', targetItemKey], null);
       if(!itemsByParent) {
         await dispatch(fetchChildItems(targetItemKey, { start: 0, limit: 100 }));
@@ -214,12 +213,12 @@ const selectItemsMouse = (targetItemKey, isShiftModifer, isCtrlModifer) => {
           if (item && item.contentType == "application/pdf") {
 						if (isCtrlModifer) {
 							//window.open("http://localhost:5000/thumbpdf/" + item.key + "?script");
-							window.open("http://localhost:5000/web/viewer.html?file=http://localhost:5000/paper/" + item.key);
+              openNewWindow(item.key);
 						} else {
 							console.log("Found pdf" + item.key);
 							document.getElementById("pdf_preview").innerHTML = "Loading Thumbnails";
 
-              $("#pdf_preview").html('<iframe width="100%" height="1600px" style="border: 0;" src="http://localhost:5000/web/viewer.html?file=http://localhost:5000/paper/' + item.key + '"></iframe>');
+              openBelow(item.key);
 							//const xhttp = new XMLHttpRequest();
 							//xhttp.onload = function() {
 								//$("#pdf_preview").html(this.responseText);
